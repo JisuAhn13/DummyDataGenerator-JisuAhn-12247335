@@ -226,7 +226,7 @@ static void printHelp(const char* prog) {
         "옵션:\n"
         "  -n <수>               생성할 사용자 수 (기본: 10)\n"
         "  -o <경로>             출력 파일 경로\n"
-        "                        (기본: ../DataPersistence/build/users.json)\n"
+        "                        (기본: 현재 작업 디렉터리의 users.json)\n"
         "  --append              기존 데이터에 추가 (미지정 시 덮어쓰기)\n"
         "  --lang <ko|en|mixed>  이름 언어 (기본: mixed)\n"
         "  --seed <값>           랜덤 시드 (재현 가능한 데이터 생성)\n"
@@ -290,11 +290,9 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // 기본 출력 경로: exe 기준 ../../DataPersistence/build/users.json
+    // 기본 출력 경로: 실행 시 현재 작업 디렉터리의 users.json
     if (cfg.output.empty()) {
-        fs::path exeDir = fs::path(argv[0]).parent_path();
-        fs::path target = exeDir / ".." / ".." / "DataPersistence" / "build" / "users.json";
-        cfg.output = fs::weakly_canonical(target).string();
+        cfg.output = (fs::current_path() / "users.json").string();
     }
 
     // RNG 초기화
